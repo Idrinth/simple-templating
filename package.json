@@ -1,0 +1,26 @@
+{
+    "name": "@idrinth/simple-templating",
+    "description": "a very simple templating engine for browsers",
+    "keywords": ["templating", "template", "browser"],
+    "version": "1.0.0",
+    "homepage": "https://github.com/idrinth/simple-templating#readme",
+    "license": "MIT",
+    "browser": "src/template.js",
+    "author": {
+        "name": "Björn Büttner",
+        "url": "https://github.com/Idrinth"
+    },
+    "directories": {
+        "lib": "./src",
+        "test": "./test"
+    },
+    "devDependencies": {
+        "mocha": "^5",
+        "chai": "^4.1",
+        "rewire": "^4"
+    },
+    "repository": {
+        "type" : "git",
+        "url" : "https://github.com/idrinth/simple-templating.git"
+    }
+}
