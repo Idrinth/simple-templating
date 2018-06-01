@@ -32,6 +32,21 @@ describe ( "template", function ( ) {
                                             name: ""
                                         } ).should.equal ( "" );
                                     } );
+                                    var inverted = new ConditionTag ( "!name", {
+                                        render () {
+                                            return "B";
+                                        }
+                                    } );
+                                    it ( "render should return expected html(2)", function () {
+                                        inverted.render ( {
+                                            name: "A"
+                                        } ).should.equal ( "" );
+                                    } );
+                                    it ( "render should return expected html(3)", function () {
+                                        inverted.render ( {
+                                            name: ""
+                                        } ).should.equal ( "B" );
+                                    } );
                                 } );
                             } );
                         } );

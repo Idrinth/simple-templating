@@ -16,8 +16,9 @@ logic blocks may contain other logic blocks.
 ### IF
 
 `{{%if check%}}This shows if the boolean value of check is true.{{%end%}}`
+`{{%if !check%}}This shows if the boolean value of check is false.{{%end%}}`
 
-This does not support more than one variable and does not support chaining for the time being.
+This does not support more than one variable and does not support chaining for the time being. You can invert the check by adding an exclamation mark in front of the condition tho.
 
 ### EACH
 

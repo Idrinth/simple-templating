@@ -27,7 +27,8 @@ class ConditionTag extends TemplateTag {
     {
         super ();
         this.body = body;
-        this.name = name;
+        this.inverted = name.charAt(0) === '!';
+        this.name = name.substr( this.inverted ? 1 : 0 );
     }
     /**
      * @public
@@ -36,10 +37,7 @@ class ConditionTag extends TemplateTag {
      */
     render ( values )
     {
-        if ( !values[this.name] ) {
-            return "";
-        }
-        if ( !values[this.name] ) {
+        if ( (!values[this.name]) !== this.inverted ) {
             return "";
         }
         return this.body.render ( values );
@@ -161,9 +159,9 @@ class BodyTag extends TemplateTag {
                 content = this.replace ( content, values[key], prefix + key + "." );
             } else {
                 content = content.replace (
-                        new RegExp ( "{{" + prefix + key + "}}", "g" ),
-                        this.escape ( values[key] )
-                        );
+                    new RegExp ( "{{" + prefix + key + "}}", "g" ),
+                    this.escape ( values[key] )
+                );
             }
         }
         return content;
