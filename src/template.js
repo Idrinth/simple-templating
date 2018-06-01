@@ -208,7 +208,7 @@ class Template extends TemplateTag {
         if ( name === "if" ) {
             return this.parts.push ( new ConditionTag ( value, body ) );
         }
-        throw new Error ( "Token " + def[0] + " is unknown." );
+        throw new Error ( "Token " + name + " is unknown." );
     }
     /**
      * @private
