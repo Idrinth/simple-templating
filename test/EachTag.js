@@ -76,6 +76,11 @@ describe ( "template", function ( ) {
                                             name_pos: 1
                                         } );
                                     } );
+                                    it ( "render should return expected html(2)", function () {
+                                        instance.render ( {
+                                            name: "m"
+                                        } ).should.be.equal ( "" );
+                                    } );
                                 } );
                             } );
                         } );

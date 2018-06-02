@@ -30,9 +30,9 @@ describe ( "template", function ( ) {
                                         instance.render ( {
                                             name: "A",
                                             names: {
-                                                last: "<b>&B is \"big\"</b>"
+                                                last: "<b>&B's \"big\"</b>"
                                             }
-                                        } ).should.equal ( "<p>A: &lt;b&gt;&amp;B is &quot;big&quot;&lt;/b&gt;</p>" );
+                                        } ).should.equal ( "<p>A: &lt;b&gt;&amp;B&#039;s &quot;big&quot;&lt;/b&gt;</p>" );
                                     } );
                                 } );
                             } );

@@ -127,25 +127,33 @@ class BodyTag extends TemplateTag
     }
     /**
      * @private
+     * @param {String} match
+     * @return {String}
+     */
+    replaceMatch ( match ) {
+        switch ( match ) {
+            case "&":
+                return "&amp;";
+            case "<":
+                return "&lt;";
+            case ">":
+                return "&gt;";
+            case "\"":
+                return "&quot;";
+            case "'":
+                return "&#039;";
+            default:
+                return match;
+        }
+    }
+    /**
+     * @private
      * @param {String|Number} unsafe
      * @return {String}
      */
     escape ( unsafe )
     {
-        return ( unsafe + "" ).replace ( /[&<"">]/g, function ( m ) {
-            switch ( m ) {
-                case "&":
-                    return "&amp;";
-                case "<":
-                    return "&lt;";
-                case ">":
-                    return "&gt;";
-                case "\"":
-                    return "&quot;";
-                default:
-                    return "&#039;";
-            }
-        } );
+        return ( unsafe + "" ).replace ( /[&<"'>]/g, this.replaceMatch );
     }
     /**
      * @public
