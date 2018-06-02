@@ -1,6 +1,13 @@
 # Simple Templating
 
-This small library provides minimal templating options:
+This small library provides minimal templating options for javascrpt in browsers.
+
+| Type | Status |
+| --- | --- |
+| Build | [![Build Status](https://travis-ci.org/Idrinth/simple-templating.svg?branch=master)](https://travis-ci.org/Idrinth/simple-templating) |
+| Coverage | [![Test Coverage](https://api.codeclimate.com/v1/badges/36da5f7441f95e94b8bd/test_coverage)](https://codeclimate.com/github/Idrinth/simple-templating/test_coverage) [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/5f96fa1a257948598e2d964f2979648a)](https://www.codacy.com/app/Idrinth/simple-templating?utm_source=github.com&utm_medium=referral&utm_content=Idrinth/simple-templating&utm_campaign=Badge_Coverage) |
+| Quality | [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5f96fa1a257948598e2d964f2979648a)](https://www.codacy.com/app/Idrinth/simple-templating?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Idrinth/simple-templating&amp;utm_campaign=Badge_Grade) |
+| Maintainability | [![Maintainability](https://api.codeclimate.com/v1/badges/36da5f7441f95e94b8bd/maintainability)](https://codeclimate.com/github/Idrinth/simple-templating/maintainability) |
 
 ## Values
 

@@ -17,14 +17,22 @@ describe ( "template", function ( ) {
                             it ( "BodyTag should have a property render", function () {
                                 instance.should.have.property ( "render" );
                                 describe ( "template.BodyTag#Instance.render()", function () {
+                                    var instance = new BodyTag ( "<p>{{name}}: {{names.last}}</p>" );
                                     it ( "render should return expected html(0)", function () {
-                                        var instance = new BodyTag ( "<p>{{name}}: {{names.last}}</p>" );
                                         instance.render ( {
                                             name: "A",
                                             names: {
                                                 last: "B"
                                             }
                                         } ).should.equal ( "<p>A: B</p>" );
+                                    } );
+                                    it ( "render should return expected html(1)", function () {
+                                        instance.render ( {
+                                            name: "A",
+                                            names: {
+                                                last: "<b>&B is \"big\"</b>"
+                                            }
+                                        } ).should.equal ( "<p>A: &lt;b&gt;&amp;B is &quot;big&quot;&lt;/b&gt;</p>" );
                                     } );
                                 } );
                             } );

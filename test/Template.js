@@ -10,6 +10,12 @@ describe ( "template", function ( ) {
             it ( "Template should be a function", function () {
                 Template.should.be.a ( "function" );
                 describe ( "template.Template()", function () {
+                    it ( "Template() should throw if end tag is missing", function () {
+                        expect(() => new Template ( "{{%if a%}}hi world" )).to.throw( "can't find end." );
+                    });
+                    it ( "Template() should throw if unknown tag is used", function () {
+                        expect(() => new Template ( "{{%ef a%}}hi world{{%end%}}" )).to.throw( "Token ef is invalid." );
+                    });
                     it ( "Template() should return an object", function () {
                         var instance = new Template ( "" );
                         instance.should.be.an ( "object" );

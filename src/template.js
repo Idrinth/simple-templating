@@ -132,12 +132,14 @@ class BodyTag extends TemplateTag
      */
     escape ( unsafe )
     {
-        return ( unsafe + "" ).replace ( /[&<""]/g, function ( m ) {
+        return ( unsafe + "" ).replace ( /[&<"">]/g, function ( m ) {
             switch ( m ) {
                 case "&":
                     return "&amp;";
                 case "<":
                     return "&lt;";
+                case ">":
+                    return "&gt;";
                 case "\"":
                     return "&quot;";
                 default:
@@ -220,7 +222,7 @@ class Template extends TemplateTag
         if ( name === "if" ) {
             return this.parts.push ( new ConditionTag ( value, body ) );
         }
-        throw new Error ( "Token " + name + " is unknown." );
+        throw new Error ( "Token " + name + " is invalid." );
     }
     /**
      * @private
@@ -230,13 +232,7 @@ class Template extends TemplateTag
      */
     adjustmentForTag ( tag )
     {
-        if ( tag === "each" || tag === "if" ) {
-            return 1;
-        } else if ( tag === "end" ) {
-            return -1;
-        } else {
-            throw new Error ( "Token " + tag + " is unknown." );
-        }
+        return ( tag === "each" || tag === "if" ) ? 1 : -1;
     };
     /**
      * @private
