@@ -33,7 +33,7 @@ class ConditionTag extends TemplateTag
         super ();
         this.body = body;
         this.inverted = name.charAt(0) === "!";
-        this.name = name.substr( this.inverted ? 1 : 0 ).split('.');
+        this.name = name.substr( this.inverted ? 1 : 0 ).split( "." );
     }
     /**
      * @private
@@ -44,7 +44,6 @@ class ConditionTag extends TemplateTag
     {
         let cur = values;
         for ( let key of this.name ) {
-            console.log(key);
             if ( !cur[key] ) {
                 return false;
             }
@@ -96,10 +95,10 @@ class EachTag extends TemplateTag
     {
         let options = JSON.parse ( JSON.stringify ( values ) );
         options["_" + this.list] = {
-            key: key,
+            key,
             value: list[key],
             even: !( pos % 2),
-            pos: pos
+            pos
         };
         return this.body.render ( options );
     }
@@ -270,7 +269,7 @@ class Template extends TemplateTag
     adjustmentForTag ( tag )
     {
         return ( tag === "each" || tag === "if" ) ? 1 : -1;
-    };
+    }
     /**
      * @private
      * @param {String} code
