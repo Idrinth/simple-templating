@@ -1,21 +1,24 @@
 /**
  * @type {TemplateTag}
  */
-class TemplateTag {
+class TemplateTag
+{
     /**
      * @public
      * @param {Object} values
      * @return {String}
      * @throws {Error} this is just a base for all other tags, not an implementation
      */
-    render ( values ) {
+    render ( values )
+    {
         throw new Error ( "The child class has to implement this!" );
     }
 }
 /**
  * @type {ConditionTag}
  */
-class ConditionTag extends TemplateTag {
+class ConditionTag extends TemplateTag
+{
     /**
      * @public
      * @constructor
@@ -27,7 +30,7 @@ class ConditionTag extends TemplateTag {
     {
         super ();
         this.body = body;
-        this.inverted = name.charAt(0) === '!';
+        this.inverted = name.charAt(0) === "!";
         this.name = name.substr( this.inverted ? 1 : 0 );
     }
     /**
@@ -46,7 +49,8 @@ class ConditionTag extends TemplateTag {
 /**
  * @type {EachTag}
  */
-class EachTag extends TemplateTag {
+class EachTag extends TemplateTag
+{
     /**
      * @public
      * @constructor
@@ -72,8 +76,8 @@ class EachTag extends TemplateTag {
      * @param {Number} pos
      * @return {String}
      */
-    renderPart ( values, list, key, pos ) {
-
+    renderPart ( values, list, key, pos )
+    {
         let options = JSON.parse ( JSON.stringify ( values ) );
         options[this.key] = key;
         options[this.value] = list[key];
@@ -108,14 +112,16 @@ class EachTag extends TemplateTag {
 /**
  * @type {BodyTag}
  */
-class BodyTag extends TemplateTag {
+class BodyTag extends TemplateTag
+{
     /**
      * @public
      * @constructor
      * @param {String} content
      * @return {BodyTag}
      */
-    constructor ( content ) {
+    constructor ( content )
+    {
         super ();
         this.content = typeof content === "string" ? content : "";
     }
@@ -124,7 +130,8 @@ class BodyTag extends TemplateTag {
      * @param {String|Number} unsafe
      * @return {String}
      */
-    escape ( unsafe ) {
+    escape ( unsafe )
+    {
         return ( unsafe + "" ).replace ( /[&<""]/g, function ( m ) {
             switch ( m ) {
                 case "&":
@@ -143,7 +150,8 @@ class BodyTag extends TemplateTag {
      * @param {Object} values
      * @return {String}
      */
-    render ( values ) {
+    render ( values )
+    {
         return this.replace ( this.content, values, "" );
     }
     /**
@@ -153,7 +161,8 @@ class BodyTag extends TemplateTag {
      * @param {String} prefix
      * @return {String}
      */
-    replace ( content, values, prefix ) {
+    replace ( content, values, prefix )
+    {
         for (let key in values) {
             if ( typeof values[key] === "object" ) {
                 content = this.replace ( content, values[key], prefix + key + "." );
@@ -170,14 +179,16 @@ class BodyTag extends TemplateTag {
 /**
  * @type {Template}
  */
-class Template extends TemplateTag {
+class Template extends TemplateTag
+{
     /**
      * @public
      * @constructor
      * @param {String} code
      * @return {Template}
      */
-    constructor ( code ) {
+    constructor ( code )
+    {
         super ();
         this.parts = [ ];
         let pos = 0;
@@ -201,7 +212,8 @@ class Template extends TemplateTag {
      * @param {Template} body
      * @return {void}
      */
-    addToParts ( name, value, body ) {
+    addToParts ( name, value, body )
+    {
         if ( name === "each" ) {
             return this.parts.push ( new EachTag ( value, body ) );
         }
@@ -212,28 +224,39 @@ class Template extends TemplateTag {
     }
     /**
      * @private
+     * @param {String} tag
+     * @return {Number} the level-adjustment
+     * @throws {Error} if unknown tokens appear or no end is found
+     */
+    adjustmentForTag ( tag )
+    {
+        if ( tag === "each" || tag === "if" ) {
+            return 1;
+        } else if ( tag === "end" ) {
+            return -1;
+        } else {
+            throw new Error ( "Token " + tag + " is unknown." );
+        }
+    };
+    /**
+     * @private
      * @param {String} code
      * @param {Number} pos
-     * @return {Number}
-     * @throws {Error} if unknow tokens appear or no end is found
+     * @return {Number} the end position
+     * @throws {Error} if unknown tokens appear or no end is found
      */
-    findEnd ( code, pos ) {
+    findEnd ( code, pos )
+    {
         let pos2 = pos;
         let ins = 1;
         while ( ( pos = code.indexOf ( "{{%", pos2 ) ) > -1 ) {
             pos2 = code.indexOf ( "%}}", pos );
-            var def = ( code.substring ( pos + 3, pos2 ) ).split ( " " );
-            pos2 += 3;
-            if ( def[0] === "each" || def[0] === "if" ) {
-                ins++;
-            } else if ( def[0] === "end" ) {
-                ins--;
-            } else {
-                throw new Error ( "Token " + def[0] + " is unknown." );
-            }
+            let def = ( code.substring ( pos + 3, pos2 ) ).split ( " " );
+            ins += this.adjustmentForTag(def[0]);
             if ( ins === 0 ) {
                 return pos;
             }
+            pos2 += 3;
         }
         throw new Error ( "can't find end." );
     }
@@ -242,7 +265,8 @@ class Template extends TemplateTag {
      * @param {Object} values
      * @return {String}
      */
-    render ( values ) {
+    render ( values )
+    {
         let content = "";
         for (let pos = 0; pos < this.parts.length; pos++) {
             content += this.parts[pos].render ( values );
