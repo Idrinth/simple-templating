@@ -1,4 +1,5 @@
 /**
+ * @package
  * @type {TemplateTag}
  */
 class TemplateTag
@@ -15,6 +16,7 @@ class TemplateTag
     }
 }
 /**
+ * @package
  * @type {ConditionTag}
  */
 class ConditionTag extends TemplateTag
@@ -47,6 +49,7 @@ class ConditionTag extends TemplateTag
     }
 }
 /**
+ * @package
  * @type {EachTag}
  */
 class EachTag extends TemplateTag
@@ -110,6 +113,7 @@ class EachTag extends TemplateTag
     }
 }
 /**
+ * @package
  * @type {BodyTag}
  */
 class BodyTag extends TemplateTag
@@ -177,13 +181,23 @@ class BodyTag extends TemplateTag
             if ( typeof values[key] === "object" ) {
                 content = this.replace ( content, values[key], prefix + key + "." );
             } else {
-                content = content.replace (
-                    new RegExp ( "{{" + prefix + key + "}}", "g" ),
-                    this.escape ( values[key] )
-                );
+                content = this.replaceEscaped("{{" + prefix + key + "}}", values[key], content);
             }
         }
         return content;
+    }
+    /**
+     * @param {String} search
+     * @param {String} replace
+     * @param {String} string
+     * @return {String}
+     */
+    replaceEscaped(search, replace, string)
+    {
+        return string.replace (
+            new RegExp ( search.replace(/[.?*+^$[\]\\(){}|-]/g, "\\$&" ), "g" ),
+            this.escape ( replace )
+        );
     }
 }
 /**
