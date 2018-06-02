@@ -13,8 +13,7 @@ This small library provides minimal templating options for javascrpt in browsers
 
 assume the following values: `{key: 'value', keys:{key:2}`
 
-`{{key}}` will be replaced by `value`
-`{{keys.key}}` will be replaced by `2`
+`{{key}}` will be replaced by `value`, `{{keys.key}}` will be replaced by `2`
 
 ## Logic
 
@@ -22,9 +21,11 @@ logic blocks may contain other logic blocks.
 
 ### IF
 
-`{{%if check%}}This shows if the boolean value of check is true.{{%end%}}`
-`{{%if !check%}}This shows if the boolean value of check is false.{{%end%}}`
-`{{%if !check.property%}}This shows if the boolean value of check.property is false.{{%end%}}`
+```
+{{%if check%}}This shows if the boolean value of check is true.{{%end%}}
+{{%if !check%}}This shows if the boolean value of check is false.{{%end%}}
+{{%if !check.property%}}This shows if the boolean value of check.property is false.{{%end%}}
+```
 
 This does not support more than one variable. You can invert the check by adding an exclamation mark in front of the condition tho.
 
