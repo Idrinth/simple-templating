@@ -1,10 +1,8 @@
 var should = require ( "chai" ).should ();
 var expect = require ( "chai" ).expect;
-var rewire = require ( "rewire" );
 describe ( "template", function ( ) {
-    var template = rewire ( "../src/template" );
     it ( "should have a Template variable in scope", function ( ) {
-        var Template = template.__get__ ( "Template" );
+        var Template = require ( "../src/template" );
         should.exist ( Template );
         describe ( "template.Template", function () {
             it ( "Template should be a function", function () {
@@ -63,6 +61,22 @@ describe ( "template", function ( ) {
                                         instance.render ( {
                                             name: "A"
                                         } ).should.equal ( "<p>A</p>" );
+                                    } );
+                                    it ( "render should return expected html(4)", function () {
+                                        var instance = new Template ( "<p>{{name}}{{%each names%}}{{%if _names.pos%}}<br/>- {{_names.value}}{{%end%}}{{%end%}}</p>" );
+                                        instance.render ( {
+                                            name: "A",
+                                            names: "no object"
+                                        } ).should.equal ( "<p>A</p>" );
+                                    } );
+                                    it ( "render should return expected html(5)", function () {
+                                        var instance = new Template ( "<p>{{name}}{{%each names%}}<br/>- {{_names.value}}{{%end%}}</p>" );
+                                        instance.render ( {
+                                            name: "A",
+                                            names: [
+                                                "<b>&B's \"big\"</b>"
+                                            ]
+                                        } ).should.equal ( "<p>A<br/>- &lt;b&gt;&amp;B&#039;s &quot;big&quot;&lt;/b&gt;</p>" );
                                     } );
                                 } );
                             } );
