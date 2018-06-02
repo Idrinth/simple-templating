@@ -28,24 +28,30 @@ describe ( "template", function ( ) {
                                         } ).split ( "}{" );
                                         JSON.parse ( result[0] + "}" ).should.deep.equal ( {
                                             name: [ "A", "B", "Q" ],
-                                            name_key: 0,
-                                            name_value: "A",
-                                            name_even: true,
-                                            name_pos: 0
+                                            _name: {
+                                                key: 0,
+                                                value: "A",
+                                                even: true,
+                                                pos: 0
+                                            }
                                         } );
                                         JSON.parse ( "{" + result[1] + "}" ).should.deep.equal ( {
                                             name: [ "A", "B", "Q" ],
-                                            name_key: 1,
-                                            name_value: "B",
-                                            name_even: false,
-                                            name_pos: 1
+                                            _name: {
+                                                key: 1,
+                                                value: "B",
+                                                even: false,
+                                                pos: 1
+                                            }
                                         } );
                                         JSON.parse ( "{" + result[2] ).should.deep.equal ( {
                                             name: [ "A", "B", "Q" ],
-                                            name_key: 2,
-                                            name_value: "Q",
-                                            name_even: true,
-                                            name_pos: 2
+                                            _name: {
+                                                key: 2,
+                                                value: "Q",
+                                                even: true,
+                                                pos: 2
+                                            }
                                         } );
                                     } );
                                     it ( "render should return expected html(1)", function () {
@@ -60,20 +66,24 @@ describe ( "template", function ( ) {
                                                 a: "l",
                                                 q: "uuuu"
                                             },
-                                            name_key: "a",
-                                            name_value: "l",
-                                            name_even: true,
-                                            name_pos: 0
+                                            _name: {
+                                                key: "a",
+                                                value: "l",
+                                                even: true,
+                                                pos: 0
+                                            }
                                         } );
                                         JSON.parse ( "{" + result[1] ).should.deep.equal ( {
                                             name: {
                                                 a: "l",
                                                 q: "uuuu"
                                             },
-                                            name_key: "q",
-                                            name_value: "uuuu",
-                                            name_even: false,
-                                            name_pos: 1
+                                            _name: {
+                                                key: "q",
+                                                value: "uuuu",
+                                                even: false,
+                                                pos: 1
+                                            }
                                         } );
                                     } );
                                     it ( "render should return expected html(2)", function () {

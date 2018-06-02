@@ -45,7 +45,7 @@ describe ( "template", function ( ) {
                                         } ).should.equal ( "<p>A</p>" );
                                     } );
                                     it ( "render should return expected html(2)", function () {
-                                        var instance = new Template ( "<p>{{name}}{{%each names%}}<br/>{{names_pos}}: {{names_value}}{{%end%}}</p>" );
+                                        var instance = new Template ( "<p>{{name}}{{%each names%}}<br/>{{_names.pos}}: {{_names.value}}{{%end%}}</p>" );
                                         instance.render ( {
                                             name: "A",
                                             names: [ "a", "b" ]
@@ -55,7 +55,7 @@ describe ( "template", function ( ) {
                                         } ).should.equal ( "<p>A</p>" );
                                     } );
                                     it ( "render should return expected html(3)", function () {
-                                        var instance = new Template ( "<p>{{name}}{{%each names%}}{{%if names_pos%}}<br/>- {{names_value}}{{%end%}}{{%end%}}</p>" );
+                                        var instance = new Template ( "<p>{{name}}{{%each names%}}{{%if _names.pos%}}<br/>- {{_names.value}}{{%end%}}{{%end%}}</p>" );
                                         instance.render ( {
                                             name: "A",
                                             names: [ "a", "b" ]

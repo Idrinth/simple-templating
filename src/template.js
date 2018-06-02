@@ -33,7 +33,24 @@ class ConditionTag extends TemplateTag
         super ();
         this.body = body;
         this.inverted = name.charAt(0) === "!";
-        this.name = name.substr( this.inverted ? 1 : 0 );
+        this.name = name.substr( this.inverted ? 1 : 0 ).split('.');
+    }
+    /**
+     * @private
+     * @param {Object} values
+     * @return {Boolean}
+     */
+    isValid ( values )
+    {
+        let cur = values;
+        for ( let key of this.name ) {
+            console.log(key);
+            if ( !cur[key] ) {
+                return false;
+            }
+            cur = cur[key];
+        }
+        return !!cur;
     }
     /**
      * @public
@@ -42,7 +59,7 @@ class ConditionTag extends TemplateTag
      */
     render ( values )
     {
-        if ( (!values[this.name]) !== this.inverted ) {
+        if ( this.isValid ( values ) === this.inverted ) {
             return "";
         }
         return this.body.render ( values );
@@ -66,10 +83,6 @@ class EachTag extends TemplateTag
         super ();
         this.body = body;
         this.list = list;
-        this.key = list + "_key";
-        this.value = list + "_value";
-        this.even = list + "_even";
-        this.pos = list + "_pos";
     }
     /**
      * @private
@@ -82,10 +95,12 @@ class EachTag extends TemplateTag
     renderPart ( values, list, key, pos )
     {
         let options = JSON.parse ( JSON.stringify ( values ) );
-        options[this.key] = key;
-        options[this.value] = list[key];
-        options[this.even] = !( pos % 2 );
-        options[this.pos] = pos;
+        options["_" + this.list] = {
+            key: key,
+            value: list[key],
+            even: !( pos % 2),
+            pos: pos
+        };
         return this.body.render ( options );
     }
     /**
