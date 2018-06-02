@@ -1,10 +1,8 @@
 var should = require ( "chai" ).should ();
 var expect = require ( "chai" ).expect;
-var rewire = require ( "rewire" );
 describe ( "template", function ( ) {
-    var template = rewire ( "../src/template" );
     it ( "should have a Template variable in scope", function ( ) {
-        var Template = template.__get__ ( "Template" );
+        var Template = require ( "../src/template" );
         should.exist ( Template );
         describe ( "template.Template", function () {
             it ( "Template should be a function", function () {
