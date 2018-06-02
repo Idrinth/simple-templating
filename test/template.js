@@ -62,6 +62,22 @@ describe ( "template", function ( ) {
                                             name: "A"
                                         } ).should.equal ( "<p>A</p>" );
                                     } );
+                                    it ( "render should return expected html(4)", function () {
+                                        var instance = new Template ( "<p>{{name}}{{%each names%}}{{%if _names.pos%}}<br/>- {{_names.value}}{{%end%}}{{%end%}}</p>" );
+                                        instance.render ( {
+                                            name: "A",
+                                            names: "no object"
+                                        } ).should.equal ( "<p>A</p>" );
+                                    } );
+                                    it ( "render should return expected html(5)", function () {
+                                        var instance = new Template ( "<p>{{name}}{{%each names%}}<br/>- {{_names.value}}{{%end%}}</p>" );
+                                        instance.render ( {
+                                            name: "A",
+                                            names: [
+                                                "<b>&B's \"big\"</b>"
+                                            ]
+                                        } ).should.equal ( "<p>A<br/>- &lt;b&gt;&amp;B&#039;s &quot;big&quot;&lt;/b&gt;</p>" );
+                                    } );
                                 } );
                             } );
                         } );
