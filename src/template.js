@@ -290,9 +290,13 @@
         module.exports = Template;
     } else if (typeof define === "function" && define.amd) {
         define([], function() {
-          return Template;
+            return Template;
         });
-    } else {
+    } else if(typeof self !== 'undefined') {
+        self.Template = Template;
+    } else if(typeof window !== 'undefined') {
         window.Template = Template;
+    } else {
+        this.Template = Template;
     }
 }());

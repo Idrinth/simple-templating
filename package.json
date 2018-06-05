@@ -1,7 +1,7 @@
 {
     "name": "@idrinth/simple-templating",
     "description": "a very simple templating engine for browsers",
-    "keywords": ["templating", "template", "browser"],
+    "keywords": ["templating", "template", "browser", "node", "amd"],
     "version": "1.0.0",
     "homepage": "https://github.com/idrinth/simple-templating#readme",
     "license": "MIT",
