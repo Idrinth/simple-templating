@@ -1,28 +1,28 @@
-var should = require ( "chai" ).should ();
-var expect = require ( "chai" ).expect;
-describe ( "template", function ( ) {
-    it ( "should have a Template variable in scope", function ( ) {
-        var Template = require ( "../src/template" );
+const should = require ( "chai" ).should ();
+const expect = require ( "chai" ).expect;
+describe ( "template", () => {
+    it ( "should have a Template variable in scope", () => {
+        const Template = require ( "../src/template" );
         should.exist ( Template );
-        describe ( "template.Template", function () {
-            it ( "Template should be a function", function () {
+        describe ( "template.Template", () => {
+            it ( "Template should be a function", () => {
                 Template.should.be.a ( "function" );
-                describe ( "template.Template()", function () {
-                    it ( "Template() should throw if end tag is missing", function () {
+                describe ( "template.Template()", () => {
+                    it ( "should throw if end tag is missing", () => {
                         expect(() => new Template ( "{{%if a%}}hi world" )).to.throw( "can't find end." );
                     });
-                    it ( "Template() should throw if unknown tag is used", function () {
+                    it ( "should throw if unknown tag is used", () => {
                         expect(() => new Template ( "{{%ef a%}}hi world{{%end%}}" )).to.throw( "Token ef is invalid." );
                     });
-                    it ( "Template() should return an object", function () {
-                        var instance = new Template ( "" );
+                    it ( "should return an object", () => {
+                        let instance = new Template ( "" );
                         instance.should.be.an ( "object" );
-                        describe ( "template.Template#Instance", function () {
-                            it ( "Template should have a property render", function () {
+                        describe ( "template.Template#Instance", () => {
+                            it ( "should have a property render", () => {
                                 instance.should.have.property ( "render" );
-                                describe ( "template.Template#Instance.render()", function () {
-                                    it ( "render should return expected html(0)", function () {
-                                        var instance = new Template ( "<p>{{name}}: {{names.last}}</p>" );
+                                describe ( "template.Template#Instance.render()", () => {
+                                    it ( "should return expected html(0)", () => {
+                                        let instance = new Template ( "<p>{{name}}: {{names.last}}</p>" );
                                         instance.render ( {
                                             name: "A",
                                             names: {
@@ -30,8 +30,8 @@ describe ( "template", function ( ) {
                                             }
                                         } ).should.equal ( "<p>A: B</p>" );
                                     } );
-                                    it ( "render should return expected html(1)", function () {
-                                        var instance = new Template ( "<p>{{name}}{{%if names%}}: {{names.last}}{{%end%}}</p>" );
+                                    it ( "should return expected html(1)", () => {
+                                        let instance = new Template ( "<p>{{name}}{{%if names%}}: {{names.last}}{{%end%}}</p>" );
                                         instance.render ( {
                                             name: "A",
                                             names: {
@@ -42,8 +42,8 @@ describe ( "template", function ( ) {
                                             name: "A"
                                         } ).should.equal ( "<p>A</p>" );
                                     } );
-                                    it ( "render should return expected html(2)", function () {
-                                        var instance = new Template ( "<p>{{name}}{{%each names%}}<br/>{{_names.pos}}: {{_names.value}}{{%end%}}</p>" );
+                                    it ( "should return expected html(2)", () => {
+                                        let instance = new Template ( "<p>{{name}}{{%each names%}}<br/>{{_names.pos}}: {{_names.value}}{{%end%}}</p>" );
                                         instance.render ( {
                                             name: "A",
                                             names: [ "a", "b" ]
@@ -52,8 +52,8 @@ describe ( "template", function ( ) {
                                             name: "A"
                                         } ).should.equal ( "<p>A</p>" );
                                     } );
-                                    it ( "render should return expected html(3)", function () {
-                                        var instance = new Template ( "<p>{{name}}{{%each names%}}{{%if _names.pos%}}<br/>- {{_names.value}}{{%end%}}{{%end%}}</p>" );
+                                    it ( "should return expected html(3)", () => {
+                                        let instance = new Template ( "<p>{{name}}{{%each names%}}{{%if _names.pos%}}<br/>- {{_names.value}}{{%end%}}{{%end%}}</p>" );
                                         instance.render ( {
                                             name: "A",
                                             names: [ "a", "b" ]
@@ -62,15 +62,15 @@ describe ( "template", function ( ) {
                                             name: "A"
                                         } ).should.equal ( "<p>A</p>" );
                                     } );
-                                    it ( "render should return expected html(4)", function () {
-                                        var instance = new Template ( "<p>{{name}}{{%each names%}}{{%if _names.pos%}}<br/>- {{_names.value}}{{%end%}}{{%end%}}</p>" );
+                                    it ( "should return expected html(4)", () => {
+                                        let instance = new Template ( "<p>{{name}}{{%each names%}}{{%if _names.pos%}}<br/>- {{_names.value}}{{%end%}}{{%end%}}</p>" );
                                         instance.render ( {
                                             name: "A",
                                             names: "no object"
                                         } ).should.equal ( "<p>A</p>" );
                                     } );
-                                    it ( "render should return expected html(5)", function () {
-                                        var instance = new Template ( "<p>{{name}}{{%each names%}}<br/>- {{_names.value}}{{%end%}}</p>" );
+                                    it ( "should return expected html(5)", () => {
+                                        let instance = new Template ( "<p>{{name}}{{%each names%}}<br/>- {{_names.value}}{{%end%}}</p>" );
                                         instance.render ( {
                                             name: "A",
                                             names: [

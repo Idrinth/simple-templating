@@ -1,4 +1,4 @@
-(function () {
+(() => {
     /**
      * @package
      * @type {ConditionTag}
@@ -289,7 +289,7 @@
     if (typeof module !== "undefined" && typeof module.exports !== "undefined") {
         module.exports = Template;
     } else if (typeof define === "function" && define.amd) {
-        define([], function() {
+        define([], () => {
             return Template;
         });
     } else if(typeof self !== 'undefined') {
@@ -299,4 +299,4 @@
     } else {
         this.Template = Template;
     }
-}());
+})();
