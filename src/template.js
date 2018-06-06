@@ -1,3 +1,4 @@
+"use strict";
 (() => {
     /**
      * @package
@@ -110,26 +111,27 @@
     }
     /**
      * @package
-     * @type {BodyTag}
+     * @type {ValueTag}
      */
-    class BodyTag
+    class ValueTag
     {
         /**
          * @public
          * @constructor
-         * @param {String} content
-         * @return {BodyTag}
+         * @param {String} name
+         * @return {ValueTag}
          */
-        constructor ( content )
+        constructor (name)
         {
-            this.content = typeof content === "string" ? content : "";
+            this.name = name.split(".");
         }
         /**
          * @private
          * @param {String} match
          * @return {String}
          */
-        replaceMatch ( match ) {
+        replaceMatch ( match )
+        {
             switch ( match ) {
                 case "&":
                     return "&amp;";
@@ -161,41 +163,88 @@
          */
         render ( values )
         {
-            return this.replace ( this.content, values, "" );
-        }
-        /**
-         * @private
-         * @param {String} content
-         * @param {Object} values
-         * @param {String} prefix
-         * @return {String}
-         */
-        replace ( content, values, prefix )
-        {
-            for (let key in values) {
-                if ( typeof values[key] === "object" ) {
-                    content = this.replace ( content, values[key], prefix + key + "." );
-                } else {
-                    content = this.replaceEscaped("{{" + prefix + key + "}}", values[key], content);
+            let cur = values;
+            for (let key of this.name) {
+                if (typeof cur[key] === 'undefined') {
+                    return "";
                 }
+                cur = cur[key];
             }
-            return content;
-        }
-        /**
-         * @param {String} search
-         * @param {String} replace
-         * @param {String} string
-         * @return {String}
-         */
-        replaceEscaped(search, replace, string)
-        {
-            return string.replace (
-                new RegExp ( search.replace(/[.?*+^$[\]\\(){}|-]/g, "\\$&" ), "g" ),
-                this.escape ( replace )
-            );
+            return this.escape (cur);
         }
     }
     /**
+     * @package
+     * @type {TextTag}
+     */
+    class TextTag
+    {
+        /**
+         * @public
+         * @constructor
+         * @param {String} string
+         * @return {TextTag}
+         */
+        constructor (string)
+        {
+            this.string = string;
+        }
+        /**
+         * @public
+         * @param {Object} values
+         * @return {String}
+         */
+        render ( values )
+        {
+            return this.string;
+        }
+    }
+    /**
+     * @package
+     * @type {BodyTag}
+     */
+    class BodyTag
+    {
+        /**
+         * @public
+         * @constructor
+         * @param {String} content
+         * @return {BodyTag}
+         */
+        constructor ( content )
+        {
+            this.parts = [];
+            if (typeof content === "string" && content.length > 0) {
+                let pos = -1;
+                while ((pos = content.indexOf('{{')) > -1) {
+                    if (pos > 0) {
+                        this.parts.push(new TextTag(content.substr(0, pos)));
+                        content = content.substr(pos);
+                    }
+                    let end = content.indexOf('}}');
+                    let tag = content.substr(2, end-2);
+                    content = content.substr(end+2);
+                    this.parts.push(new ValueTag(tag));
+                }
+                this.parts.push(new TextTag(content));
+            }
+        }
+        /**
+         * @public
+         * @param {Object} values
+         * @return {String}
+         */
+        render ( values )
+        {
+            let out = '';
+            for (let tag of this.parts) {
+                out += tag.render(values);
+            }
+            return out;
+        }
+    }
+    /**
+     * @package
      * @type {Template}
      */
     class Template
@@ -210,16 +259,16 @@
         {
             this.parts = [ ];
             let pos = 0;
-            while ( ( pos = code.indexOf ( "{{%" ) ) > -1 ) {
+            while ( ( pos = code.indexOf ( "{%" ) ) > -1 ) {
                 if ( pos > 0 ) {
                     this.parts.push ( new BodyTag ( code.substring ( 0, pos ) ) );
                 }
-                code = code.substring ( pos + 3 );
-                let pos2 = code.indexOf ( "%}}" );
+                code = code.substring ( pos + 2 );
+                let pos2 = code.indexOf ( "%}" );
                 let def = ( code.substring ( 0, pos2 ) ).split ( " " );
-                let pos3 = this.findEnd ( code, pos2 + 3 );
-                this.addToParts ( def[0], def[1], new Template ( code.substring ( pos2 + 3, pos3 ) ) );
-                code = code.substring ( pos3 + 9 );
+                let pos3 = this.findEnd ( code, pos2 + 2 );
+                this.addToParts ( def[0], def[1], new Template ( code.substring ( pos2 + 2, pos3 ) ) );
+                code = code.substring ( pos3 + 7 );
             }
             this.parts.push ( new BodyTag ( code ) );
         }
@@ -261,14 +310,14 @@
         {
             let pos2 = pos;
             let ins = 1;
-            while ( ( pos = code.indexOf ( "{{%", pos2 ) ) > -1 ) {
-                pos2 = code.indexOf ( "%}}", pos );
-                let def = ( code.substring ( pos + 3, pos2 ) ).split ( " " );
+            while ( ( pos = code.indexOf ( "{%", pos2 ) ) > -1 ) {
+                pos2 = code.indexOf ( "%}", pos );
+                let def = ( code.substring ( pos + 2, pos2 ) ).split ( " " );
                 ins += this.adjustmentForTag(def[0]);
                 if ( ins === 0 ) {
                     return pos;
                 }
-                pos2 += 3;
+                pos2 += 2;
             }
             throw new Error ( "can't find end." );
         }
@@ -292,11 +341,9 @@
         define([], () => {
             return Template;
         });
-    } else if(typeof self !== 'undefined') {
-        self.Template = Template;
-    } else if(typeof window !== 'undefined') {
-        window.Template = Template;
+    } else if(self||window||this||global) {
+        (self||window||this||global).Template = Template;
     } else {
-        this.Template = Template;
+        throw new Error("nothing to attach to found")
     }
 })();

@@ -1,7 +1,13 @@
 {
     "name": "@idrinth/simple-templating",
     "description": "a very simple templating engine for browsers",
-    "keywords": ["templating", "template", "browser", "node", "amd"],
+    "keywords": [
+        "templating",
+        "template",
+        "browser",
+        "node",
+        "amd"
+    ],
     "version": "1.0.0",
     "homepage": "https://github.com/idrinth/simple-templating#readme",
     "license": "MIT",
@@ -16,10 +22,14 @@
     },
     "devDependencies": {
         "mocha": "^5",
-        "chai": "^4.1"
+        "chai": "^4.1",
+        "uglify-es": "^3.3"
+    },
+    "scripts": {
+        "minify": "node node_modules/uglify-es/bin/uglifyjs --compress --mangle -- src/template.js"
     },
     "repository": {
-        "type" : "git",
-        "url" : "https://github.com/idrinth/simple-templating.git"
+        "type": "git",
+        "url": "https://github.com/idrinth/simple-templating.git"
     }
 }

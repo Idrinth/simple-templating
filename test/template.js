@@ -9,10 +9,10 @@ describe ( "template", () => {
                 Template.should.be.a ( "function" );
                 describe ( "template.Template()", () => {
                     it ( "should throw if end tag is missing", () => {
-                        expect(() => new Template ( "{{%if a%}}hi world" )).to.throw( "can't find end." );
+                        expect(() => new Template ( "{%if a%}hi world" )).to.throw( "can't find end." );
                     });
                     it ( "should throw if unknown tag is used", () => {
-                        expect(() => new Template ( "{{%ef a%}}hi world{{%end%}}" )).to.throw( "Token ef is invalid." );
+                        expect(() => new Template ( "{%ef a%}hi world{%end%}" )).to.throw( "Token ef is invalid." );
                     });
                     it ( "should return an object", () => {
                         let instance = new Template ( "" );
@@ -31,7 +31,7 @@ describe ( "template", () => {
                                         } ).should.equal ( "<p>A: B</p>" );
                                     } );
                                     it ( "should return expected html(1)", () => {
-                                        let instance = new Template ( "<p>{{name}}{{%if names%}}: {{names.last}}{{%end%}}</p>" );
+                                        let instance = new Template ( "<p>{{name}}{%if names%}: {{names.last}}{%end%}</p>" );
                                         instance.render ( {
                                             name: "A",
                                             names: {
@@ -43,7 +43,7 @@ describe ( "template", () => {
                                         } ).should.equal ( "<p>A</p>" );
                                     } );
                                     it ( "should return expected html(2)", () => {
-                                        let instance = new Template ( "<p>{{name}}{{%each names%}}<br/>{{_names.pos}}: {{_names.value}}{{%end%}}</p>" );
+                                        let instance = new Template ( "<p>{{name}}{%each names%}<br/>{{_names.pos}}: {{_names.value}}{%end%}</p>" );
                                         instance.render ( {
                                             name: "A",
                                             names: [ "a", "b" ]
@@ -53,7 +53,7 @@ describe ( "template", () => {
                                         } ).should.equal ( "<p>A</p>" );
                                     } );
                                     it ( "should return expected html(3)", () => {
-                                        let instance = new Template ( "<p>{{name}}{{%each names%}}{{%if _names.pos%}}<br/>- {{_names.value}}{{%end%}}{{%end%}}</p>" );
+                                        let instance = new Template ( "<p>{{name}}{%each names%}{%if _names.pos%}<br/>- {{_names.value}}{%end%}{%end%}</p>" );
                                         instance.render ( {
                                             name: "A",
                                             names: [ "a", "b" ]
@@ -63,14 +63,14 @@ describe ( "template", () => {
                                         } ).should.equal ( "<p>A</p>" );
                                     } );
                                     it ( "should return expected html(4)", () => {
-                                        let instance = new Template ( "<p>{{name}}{{%each names%}}{{%if _names.pos%}}<br/>- {{_names.value}}{{%end%}}{{%end%}}</p>" );
+                                        let instance = new Template ( "<p>{{name}}{%each names%}{%if _names.pos%}<br/>- {{_names.value}}{%end%}{%end%}</p>" );
                                         instance.render ( {
                                             name: "A",
                                             names: "no object"
                                         } ).should.equal ( "<p>A</p>" );
                                     } );
                                     it ( "should return expected html(5)", () => {
-                                        let instance = new Template ( "<p>{{name}}{{%each names%}}<br/>- {{_names.value}}{{%end%}}</p>" );
+                                        let instance = new Template ( "<p>{{name}}{%each names%}<br/>- {{_names.value}}{%end%}</p>" );
                                         instance.render ( {
                                             name: "A",
                                             names: [

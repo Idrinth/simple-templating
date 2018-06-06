@@ -1,12 +1,12 @@
 const Template = require ( "../src/template" );
 const should = require ( "chai" ).should ();
 const expect = require ( "chai" ).expect;
-const number = 1000;
+const number = 7500;
 const code = {
     output: "{{title}}",
-    condition: "{{%if title%}}{{title}}{{%end%}}",
-    list: "{{%each list%}}{{_list.value}}{{%end%}}",
-    complex: "<h1>{{title}}</h1><ul>{{%each list%}}<li>hi {{_list.value}}{{%if _list.even%}}?{{%end%}}</li>{{%end%}}</ul><p>We win, {{name}}!"
+    condition: "{%if title%}{{title}}{%end%}",
+    list: "{%each list%}{{_list.value}}{%end%}",
+    complex: "<h1>{{title}}</h1><ul>{%each list%}<li>hi {{_list.value}}{%if _list.even%}?{%end%}</li>{%end%}</ul><p>We win, {{name}}!"
 };
 const values = {
     title: "An Example",
@@ -34,6 +34,19 @@ var data = {};
 function duration(start, end) {
     return end.getTime()-start.getTime();
 }
+function makeSet(start, end, cases)
+{
+    let data = {
+        avg: (cases.reduce((a, b) => a+b, 0)/number),
+        num: number,
+        dur: cases.reduce((a, b) => a+b, 0),
+        max: Math.max (...cases),
+        min: Math.min (...cases),
+        total: duration(start, end)
+    };
+    data.ops = Math.floor(number/(data.dur?data.dur:data.total)*1000);
+    return data;
+}
 describe ( "performance", ( ) => {
     after(() => {
         console.log(JSON.stringify(data));
@@ -48,14 +61,7 @@ describe ( "performance", ( ) => {
                 ((new Template(code[key])).render(values)).should.not.equal("");
                 cases[i] = duration(start, new Date());
             }
-            data[key].uncached = {
-                avg: (cases.reduce((a, b) => a+b, 0)/number),
-                num: number,
-                dur: cases.reduce((a, b) => a+b, 0),
-                max: Math.max (...cases),
-                min: Math.min (...cases),
-                total: duration(tStart, new Date())
-            };
+            data[key].uncached = makeSet(tStart, new Date(), cases);
         });
         it ( key+": should render cached templates", () => {
             let tStart = new Date();
@@ -66,14 +72,7 @@ describe ( "performance", ( ) => {
                 (template.render(values)).should.not.equal("");
                 cases[i] = duration(start, new Date());
             }
-            data[key].cached = {
-                avg: (cases.reduce((a, b) => a+b, 0)/number),
-                num: number,
-                dur: cases.reduce((a, b) => a+b, 0),
-                max: Math.max (...cases),
-                min: Math.min (...cases),
-                total: duration(tStart, new Date())
-            };
+            data[key].cached = makeSet(tStart, new Date(), cases);
         });
     }
 });
