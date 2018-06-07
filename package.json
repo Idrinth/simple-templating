@@ -23,7 +23,11 @@
     "devDependencies": {
         "mocha": "^5",
         "chai": "^4.1",
-        "prettyjson": "^1.2"
+        "prettyjson": "^1.2",
+        "uglify-es": "^3.3"
+    },
+    "scripts": {
+        "minify": "uglifyjs --compress --mangle --mangle-props reserved=[\"render\",\"Template\",\"exports\"] --output=src/template.min.js -- src/template.js"
     },
     "repository": {
         "type": "git",
