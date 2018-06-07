@@ -23,7 +23,6 @@
     "devDependencies": {
         "mocha": "^5",
         "chai": "^4.1",
-        "prettyjson": "^1.2",
         "uglify-es": "^3.3"
     },
     "scripts": {
