@@ -18,10 +18,10 @@ for (let version of ['', '.min']) {
                         it ( "should return an object", () => {
                             let instance = new Template ( "" );
                             instance.should.be.an ( "object" );
-                            describe ( "template.Template#Instance", () => {
+                            describe ( "template"+version+".Template#Instance", () => {
                                 it ( "should have a property render", () => {
                                     instance.should.have.property ( "render" );
-                                    describe ( "template.Template#Instance.render()", () => {
+                                    describe ( "template"+version+".Template#Instance.render()", () => {
                                         it ( "should return expected html(0)", () => {
                                             let instance = new Template ( "<p>{{name}}: {{names.last}}</p>" );
                                             instance.render ( {

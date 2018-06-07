@@ -8,7 +8,7 @@ const factor = (() => {
     for (let i = 0; i < number; i++) {
         num += "my Name is not A bitName, is it?".match (/a+/ig);
     }
-    return number/(new Date()-start)*0.80;
+    return number/(new Date()-start)*0.8;
 })();
 const code = {
     output: [
@@ -96,8 +96,6 @@ function makeSet(start, end, cases)
     let data = {
         avg: (dur/number),
         dur,
-        max: Math.max (...cases),
-        min: Math.min (...cases),
         total: duration(start, end)
     };
     data.ops = Math.floor(1000/data.avg);

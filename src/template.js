@@ -1,5 +1,19 @@
 "use strict";
 (() => {
+    const UNDEFINED = "undefined";
+    const OBJECT = "object";
+    const LOOP = "each";
+    const CONDITION = "if";
+    const LOGIC_START = "{%";
+    const LOGIC_END = "%}";
+    const EMPTY_STRING = "";
+    const SEPARATOR = ".";
+    const LOOP_VARS = {
+        key: "key",
+        value: "value",
+        position: "pos",
+        even: "even"
+    };
     /**
      * @package
      * @type {ValueCache}
@@ -13,7 +27,7 @@
         constructor (name)
         {
             this.cached = name;
-            this.uncached = name.split(".");
+            this.uncached = name.split(SEPARATOR);
         }
         /**
          * @private
@@ -24,8 +38,8 @@
         {
             let cur = values;
             for (let key of this.uncached) {
-                if (typeof cur[key] === "undefined") {
-                    return "";
+                if (typeof cur[key] === UNDEFINED) {
+                    return EMPTY_STRING;
                 }
                 cur = cur[key];
             }
@@ -41,7 +55,7 @@
             if (this.uncached.length === 1) {
                 return values[this.cached];
             }
-            if (typeof values._cache[this.cached] === "undefined") {
+            if (typeof values._cache[this.cached] === UNDEFINED) {
                 values._cache[this.cached] = this.find( values );
             }
             return values._cache[this.cached];
@@ -75,7 +89,7 @@
         render ( values )
         {
             if ( (!!this.retrieve( values )) === this.inverted ) {
-                return "";
+                return EMPTY_STRING;
             }
             return this.body.render ( values );
         }
@@ -98,6 +112,7 @@
             super (list);
             this.body = body;
             this.list = list;
+            this.prefixed = "_"+list;
         }
         /**
          * @private
@@ -106,7 +121,7 @@
          */
         clone(obj)
         {
-            if(typeof obj !== "object" || obj === null) {
+            if(typeof obj !== OBJECT || obj === null) {
                 return obj;
             }
             if (obj.constructor === Array) {
@@ -127,20 +142,20 @@
          * @param {Object} options
          * @param {Object|Array} list
          * @param {String|Number} key
-         * @param {Number} pos
+         * @param {Number} position
          * @return {String}
          */
-        renderPart ( options, list, key, pos )
+        renderPart ( options, list, key, position )
         {
-            options["_" + this.list] = {
-                key,
-                value: list[key],
-                even: !( pos % 2),
-                pos
-            };
-            for (let prop in options["_" + this.list]) {
-                options._cache["_" + this.list+"."+prop] = options["_" + this.list][prop];
+            let local = {};
+            local[LOOP_VARS.key] = key;
+            local[LOOP_VARS.value] = list[key];
+            local[LOOP_VARS.position] = position;
+            local[LOOP_VARS.even] = !( position % 2);
+            for (let prop in LOOP_VARS) {
+                options._cache[this.prefixed+SEPARATOR+prop] = local[prop];
             }
+            options[this.prefixed] = local;
             return this.body.render ( options );
         }
         /**
@@ -152,12 +167,12 @@
         {
             let list = this.retrieve ( values );
             if ( !list ) {
-                return "";
+                return EMPTY_STRING;
             }
-            if ( typeof list !== "object" ) {
-                return "";
+            if ( typeof list !== OBJECT ) {
+                return EMPTY_STRING;
             }
-            let out = "";
+            let out = EMPTY_STRING;
             let options = this.clone ( values );
             if(list.constructor === Array) {
                 for (let pos = 0; pos < list.length; pos++) {
@@ -218,7 +233,7 @@
          */
         render ( values )
         {
-            return ( this.retrieve( values ) + "" ).replace ( /[&<"'>]/g, this.replaceMatch );
+            return ( this.retrieve( values ) + EMPTY_STRING ).replace ( /[&<"'>]/g, this.replaceMatch );
         }
     }
     /**
@@ -284,7 +299,7 @@
          */
         render ( values )
         {
-            let out = "";
+            let out = EMPTY_STRING;
             for (let tag of this.parts) {
                 out += tag.render(values);
             }
@@ -307,12 +322,12 @@
         {
             this.parts = [ ];
             let pos = 0;
-            while ( ( pos = code.indexOf ( "{%" ) ) > -1 ) {
+            while ( ( pos = code.indexOf ( LOGIC_START ) ) > -1 ) {
                 if ( pos > 0 ) {
                     this.parts.push ( new BodyTag ( code.substring ( 0, pos ) ) );
                 }
                 code = code.substring ( pos + 2 );
-                let pos2 = code.indexOf ( "%}" );
+                let pos2 = code.indexOf ( LOGIC_END );
                 let def = ( code.substring ( 0, pos2 ) ).split ( " " );
                 let pos3 = this.findEnd ( code, pos2 + 2 );
                 this.addToParts ( def[0], def[1], new Template ( code.substring ( pos2 + 2, pos3 ) ) );
@@ -329,10 +344,10 @@
          */
         addToParts ( name, value, body )
         {
-            if ( name === "each" ) {
+            if ( name === LOOP ) {
                 return this.parts.push ( new EachTag ( value, body ) );
             }
-            if ( name === "if" ) {
+            if ( name === CONDITION ) {
                 return this.parts.push ( new ConditionTag ( value, body ) );
             }
             throw new Error ( "Token " + name + " is invalid." );
@@ -345,7 +360,7 @@
          */
         adjustmentForTag ( tag )
         {
-            return ( tag === "each" || tag === "if" ) ? 1 : -1;
+            return ( tag === LOOP || tag === CONDITION ) ? 1 : -1;
         }
         /**
          * @private
@@ -358,8 +373,8 @@
         {
             let pos2 = pos;
             let ins = 1;
-            while ( ( pos = code.indexOf ( "{%", pos2 ) ) > -1 ) {
-                pos2 = code.indexOf ( "%}", pos );
+            while ( ( pos = code.indexOf ( LOGIC_START, pos2 ) ) > -1 ) {
+                pos2 = code.indexOf ( LOGIC_END, pos );
                 let def = ( code.substring ( pos + 2, pos2 ) ).split ( " " );
                 ins += this.adjustmentForTag(def[0]);
                 if ( ins === 0 ) {
@@ -377,14 +392,14 @@
         render ( values )
         {
             values._cache = {};
-            let content = "";
+            let content = EMPTY_STRING;
             for (let pos = 0; pos < this.parts.length; pos++) {
                 content += this.parts[pos].render ( values );
             }
             return content;
         }
     }
-    if (typeof module !== "undefined" && typeof module.exports !== "undefined") {
+    if (typeof module !== UNDEFINED && typeof module.exports !== UNDEFINED) {
         module.exports = Template;
     } else if (typeof define === "function" && define.amd) {
         define([], () => {
