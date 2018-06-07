@@ -1,5 +1,5 @@
 "use strict";
-(() => {
+((outer) => {
     const UNDEFINED = "undefined";
     const OBJECT = "object";
     const LOOP = "each";
@@ -400,14 +400,26 @@
         }
     }
     if (typeof module !== UNDEFINED && typeof module.exports !== UNDEFINED) {
-        module.exports = Template;
-    } else if (typeof define === "function" && define.amd) {
-        define([], () => {
+        return module.exports = Template;
+    }
+    if (typeof define === "function" && define.amd) {
+        return define([], () => {
             return Template;
         });
-    } else if(self||window||global||this) {
-        (self||window||global||this).Template = Template;
-    } else {
-        throw new Error( "nothing to attach to found" );
     }
-})();
+    ((outer) => {
+        if(typeof self !== UNDEFINED) {
+            return self;
+        }
+        if(typeof window !== UNDEFINED) {
+            return window;
+        }
+        if(typeof global !== UNDEFINED) {
+            return global;
+        }
+        if(typeof outer !== UNDEFINED) {
+            return outer;
+        }
+        throw new Error( "nothing to attach to found" );
+    })(outer).Template = Template;
+})(this);

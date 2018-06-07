@@ -1,6 +1,6 @@
 const should = require ( "chai" ).should ();
 const expect = require ( "chai" ).expect;
-for (let version of ['', '.min']) {
+for (let version of ["", ".min"]) {
     describe ( "template"+version, () => {
         it ( "should have a Template variable in scope", () => {
             const Template = require ( "../src/template"+version );
