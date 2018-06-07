@@ -7,7 +7,7 @@ const factor = (() => {
     for (let i = 0; i < number; i++) {
         num += "my Name is not A bitName, is it?".match (/a+/ig) + Math.random ();
     }
-    return number/(new Date()-start)*0.75;
+    return number/(new Date()-start)*0.7;
 })();
 const code = {
     outputSimple: [
