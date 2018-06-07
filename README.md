@@ -22,16 +22,16 @@ logic blocks may contain other logic blocks.
 ### IF
 
 ```
-{{%if check%}}This shows if the boolean value of check is true.{{%end%}}
-{{%if !check%}}This shows if the boolean value of check is false.{{%end%}}
-{{%if !check.property%}}This shows if the boolean value of check.property is false.{{%end%}}
+{%if check%}This shows if the boolean value of check is true.{{%end%}}
+{%if !check%}This shows if the boolean value of check is false.{{%end%}}
+{%if !check.property%}This shows if the boolean value of check.property is false.{{%end%}}
 ```
 
 This does not support more than one variable. You can invert the check by adding an exclamation mark in front of the condition tho.
 
 ### EACH
 
-`{{%each list%}}- {{_list.key}}: {{_list.value}}{{%end%}}`
+`{%each list%}- {{_list.key}}: {{_list.value}}{%end%}`
 
 Each iterates over Objects and Arrays, exposing an object with the following properties within the loop:
 
