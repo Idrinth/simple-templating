@@ -36,7 +36,7 @@ const code = {
     ],
     listObject: [
         "{%each ch%}{{_ch.value.ch}}{%end%}",
-        80
+        75
     ],
     listObjectList: [
         "{%each ch%}{{_ch.key}}\n{%each _ch.value%}  {{__ch.key}}:{{__ch.value}}\n{%end%}{%end%}",
