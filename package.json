@@ -10,8 +10,10 @@
     ],
     "version": "1.0.0",
     "homepage": "https://github.com/idrinth/simple-templating#readme",
+    "issues": "https://github.com/idrinth/simple-templating/issues",
     "license": "MIT",
-    "browser": "src/template.js",
+    "browser": "min/template.browser.js",
+    "main": "min/template.node.js",
     "author": {
         "name": "Björn Büttner",
         "url": "https://github.com/Idrinth"
@@ -23,10 +25,14 @@
     "devDependencies": {
         "mocha": "^5",
         "chai": "^4.1",
-        "uglify-es": "^3.3"
+        "uglify-es": "^3.3",
+        "node-requirejs-define": "^1",
+        "decache": "^4.4"
     },
     "scripts": {
-        "minify": "uglifyjs --compress --mangle --mangle-props reserved=[\"render\",\"Template\",\"exports\"] --output=src/template.min.js -- src/template.js"
+        "test": "istanbul cover \"./node_modules/mocha/bin/_mocha\" --report lcovonly --print detail -- --reporter spec",
+        "test-dev": "istanbul cover \"./node_modules/mocha/bin/_mocha\" --report html --print detail -- --reporter spec",
+        "minify": "node build/minify.js"
     },
     "repository": {
         "type": "git",

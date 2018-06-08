@@ -1,6 +1,6 @@
 # Simple Templating
 
-This small library provides minimal templating options for javascrpt in browsers.
+This small library provides minimal templating options for javascrpt in multiple enviroments, have a look at /min to see the options.
 
 | Type | Status |
 | --- | --- |

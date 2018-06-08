@@ -1,13 +1,14 @@
 const should = require ( "chai" ).should ();
 const expect = require ( "chai" ).expect;
-const number = 10000 * (process.env.CI ? 0.5 : 1);
+const number = 5000 * (process.env.CI ? 0.5 : 1);
+const cacheGain = 15 * (process.env.CI ? 0.5 : 1);
 const factor = (() => {
     let start = new Date();
     let num = 0;
     for (let i = 0; i < number; i++) {
         num += "my Name is not A bitName, is it?".match (/a+/ig) + Math.random ();
     }
-    return number/(new Date()-start)*0.7*(process.env.CI?0.7:1);
+    return number/(new Date()-start)*0.65*(process.env.CI?0.65:1);
 })();
 const code = {
     outputSimple: [
@@ -93,45 +94,43 @@ function calcOps(cases)
 {
     return Math.floor(number*1000/cases.reduce((a, b) => a+b, 0));
 }
-for (let version of ["", ".min"]) {
-    const Template = require ( "../src/template"+version );
-    describe ( "performance"+version, ( ) => {
-        for (let key in code) {
-            describe ( key, () => {
-                let data = {};
-                let ops = {
-                    uncached: Math.floor (code[key][1]*factor/100)/10,
-                    cached: Math.floor (code[key][1]*factor/100*1.25)/10
-                };
-                it ( "should render uncached templates", () => {
-                    let cases = new Array(number);
-                    for (let i=0; i < number; i++) {
-                        let start = new Date();
-                        ((new Template(code[key][0])).render(values)).should.not.equal("");
-                        cases[i] = duration(start, new Date());
-                    }
-                    data.uncached = calcOps(cases);
-                });
-                it ("uncached should have at least "+ops.uncached+"k ops/s", () => {
-                    data.uncached.should.be.above (ops.uncached*1000-1);
-                });
-                it ( "should render cached templates", () => {
-                    let cases = new Array(number);
-                    let template = new Template(code[key][0]);
-                    for (let i=0; i < number; i++) {
-                        let start = new Date();
-                        (template.render(values)).should.not.equal("");
-                        cases[i] = duration(start, new Date());
-                    }
-                    data.cached = calcOps(cases);
-                });
-                it ("cached should have at least "+ops.cached+"k ops/s", () => {
-                    data.cached.should.be.above (ops.cached*1000-1);
-                });
-                it ("cached should be at least 10% faster than uncached", () => {
-                    data.cached.should.be.above (data.uncached*1.1);
-                });
+const Template = require ( "../src/template" );
+describe ( "performance", ( ) => {
+    for (let key in code) {
+        describe ( key, () => {
+            let data = {};
+            let ops = {
+                uncached: Math.floor (code[key][1]*factor/100)/10,
+                cached: Math.floor (code[key][1]*factor/100*1.25)/10
+            };
+            it ( "should render uncached templates", () => {
+                let cases = new Array(number);
+                for (let i=0; i < number; i++) {
+                    let start = new Date();
+                    ((new Template(code[key][0])).render(values)).should.not.equal("");
+                    cases[i] = duration(start, new Date());
+                }
+                data.uncached = calcOps(cases);
             });
-        }
-    }).timeout(10000);
-}
+            it ("uncached should have at least "+ops.uncached+"k ops/s", () => {
+                data.uncached.should.be.above (ops.uncached*1000-1);
+            });
+            it ( "should render cached templates", () => {
+                let cases = new Array(number);
+                let template = new Template(code[key][0]);
+                for (let i=0; i < number; i++) {
+                    let start = new Date();
+                    (template.render(values)).should.not.equal("");
+                    cases[i] = duration(start, new Date());
+                }
+                data.cached = calcOps(cases);
+            });
+            it ("cached should have at least "+ops.cached+"k ops/s", () => {
+                data.cached.should.be.above (ops.cached*1000-1);
+            });
+            it ("cached should be at least "+cacheGain+"% faster than uncached", () => {
+                data.cached.should.be.above (data.uncached*(cacheGain/100+1)-1);
+            });
+        });
+    }
+});

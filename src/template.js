@@ -1,6 +1,5 @@
 "use strict";
 ((outer) => {
-    const UNDEFINED = "undefined";
     const OBJECT = "object";
     const LOOP = "each";
     const CONDITION = "if";
@@ -38,7 +37,7 @@
         {
             let cur = values;
             for (let key of this.uncached) {
-                if (typeof cur[key] === UNDEFINED) {
+                if (typeof cur[key] === "undefined") {
                     return EMPTY_STRING;
                 }
                 cur = cur[key];
@@ -55,7 +54,7 @@
             if (this.uncached.length === 1) {
                 return values[this.cached];
             }
-            if (typeof values._cache[this.cached] === UNDEFINED) {
+            if (typeof values._cache[this.cached] === "undefined") {
                 values._cache[this.cached] = this.find( values );
             }
             return values._cache[this.cached];
@@ -250,9 +249,8 @@
                 case "\"":
                     return "&quot;";
                 case "'":
-                    return "&#039;";
                 default:
-                    return match;
+                    return "&#039;";
             }
         }
         /**
@@ -438,7 +436,7 @@
             return content;
         }
     }
-    if (typeof module !== UNDEFINED && typeof module.exports !== UNDEFINED) {
+    if (typeof module !== "undefined" && typeof module.exports !== "undefined") {
         return module.exports = Template;
     }
     if (typeof define === "function" && define.amd) {
@@ -447,16 +445,16 @@
         });
     }
     ((outer) => {
-        if(typeof self !== UNDEFINED) {
+        if(typeof self !== "undefined") {
             return self;
         }
-        if(typeof window !== UNDEFINED) {
+        if(typeof window !== "undefined") {
             return window;
         }
-        if(typeof global !== UNDEFINED) {
+        if(typeof global !== "undefined") {
             return global;
         }
-        if(typeof outer !== UNDEFINED) {
+        if(typeof outer !== "undefined") {
             return outer;
         }
         throw new Error( "nothing to attach to found" );

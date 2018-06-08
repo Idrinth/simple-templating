@@ -1,5 +1,5 @@
 language: node_js
-node_js: "node"
+node_js: node
 git:
   depth: 3
 addons:
@@ -11,8 +11,6 @@ addons:
 before_script:
   - npm install
   - npm install codeclimate-test-reporter codacy-coverage istanbul -g
-script:
-  - istanbul cover "./node_modules/mocha/bin/_mocha" --report lcovonly --print detail -- --recursive --reporter spec
 after_success:
   - codeclimate-test-reporter < ./coverage/lcov.info
   - codacy-coverage < ./coverage/lcov.info
