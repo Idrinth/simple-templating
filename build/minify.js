@@ -36,15 +36,15 @@ const config = {
     const minifyFile = (id, globals) => {
         let min = fs.readFileSync("./src/template.js", {encoding: "utf-8"});
         for (let key in globals) {
-            min = min.replace(new RegExp(key, 'g'), "\""+globals[key]+"\"");
+            min = min.replace(new RegExp(key, "g"), "\""+globals[key]+"\"");
         }
         let len = min.length;
         do {
             len = min.length;
             min = minify(
                 min
-                    .replace(/(case([^:'"]|"[^"]"|'[^']')+?:)+default:/, "default:")
-                    .replace(/void 0!==(\"[^\"]*\"|'[^']*'|{.*?}|\[.*?\])\?/, "true?"),
+                    .replace(/(case([^:'"]|"[^"]"|'[^']')+?:)+default:/g, "default:")
+                    .replace(/void 0!==(\"[^\"]*\"|'[^']*'|{.*?}|\[.*?\])\?/g, "true?"),
                 config
             )
             .code;
