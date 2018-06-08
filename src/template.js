@@ -112,30 +112,48 @@
             super (list);
             this.body = body;
             this.list = list;
-            this.prefixed = "_"+list;
+            this.prefixed = "_"+list.replace(SEPARATOR, "#");
         }
         /**
          * @private
          * @param {mixed} obj
          * @return {mixed}
          */
-        clone(obj)
+        cloneArray(arr)
         {
-            if(typeof obj !== OBJECT || obj === null) {
-                return obj;
+            let nA = new Array(arr.length);
+            for (let i = arr.length - 1; i >= 0; i--) {
+                nA[i] = this.clone(arr[i]);
             }
-            if (obj.constructor === Array) {
-                let nA = new Array(obj.length);
-                for (let i = obj.length - 1; i >= 0; i--) {
-                    nA[i] = this.clone(obj[i]);
-                }
-                return nA;
-            }
+            return nA;
+        }
+        /**
+         * @private
+         * @param {mixed} obj
+         * @return {mixed}
+         */
+        cloneObject(obj)
+        {
             let nO = {};
             for (let p in obj) {
                 nO[p] = this.clone(obj[p]);
             }
             return nO;
+        }
+        /**
+         * @private
+         * @param {mixed} mixed
+         * @return {mixed}
+         */
+        clone(mixed)
+        {
+            if(typeof mixed !== OBJECT || mixed === null) {
+                return mixed;
+            }
+            if (mixed.constructor === Array) {
+                return this.cloneArray(mixed);
+            }
+            return this.cloneObject(mixed);
         }
         /**
          * @private
@@ -172,14 +190,35 @@
             if ( typeof list !== OBJECT ) {
                 return EMPTY_STRING;
             }
-            let out = EMPTY_STRING;
-            let options = this.clone ( values );
-            if(list.constructor === Array) {
-                for (let pos = 0; pos < list.length; pos++) {
-                    out += this.renderPart ( options, list, pos, pos );
-                }
-                return out;
+            let params = [list, this.clone ( values ), EMPTY_STRING];
+            if (list.constructor === Array ) {
+                this.renderArray(...params);
             }
+            return this.renderObject(...params);
+        }
+        /**
+         * @public
+         * @param {Array} list
+         * @param {Object} values
+         * @param {String} out
+         * @return {String}
+         */
+        renderArray (list, options, out)
+        {
+            for (let pos = 0; pos < list.length; pos++) {
+                out += this.renderPart ( options, list, pos, pos );
+            }
+            return out;
+        }
+        /**
+         * @public
+         * @param {Object} list
+         * @param {Object} options
+         * @param {String} out
+         * @return {String}
+         */
+        renderObject (list, options, out)
+        {
             let pos = 0;
             for (let key in list) {
                 out += this.renderPart ( options, list, key, pos );
@@ -194,16 +233,6 @@
      */
     class ValueTag extends ValueCache
     {
-        /**
-         * @public
-         * @constructor
-         * @param {String} name
-         * @return {ValueTag}
-         */
-        constructor (name)
-        {
-            super(name);
-        }
         /**
          * @private
          * @param {String} match
@@ -276,21 +305,31 @@
          */
         constructor ( content )
         {
-            this.parts = [];
-            if (typeof content === "string" && content.length > 0) {
-                let pos = -1;
-                while ((pos = content.indexOf( "{{" )) > -1) {
-                    if (pos > 0) {
-                        this.parts.push(new TextTag(content.substr(0, pos)));
-                        content = content.substr(pos);
-                    }
-                    let end = content.indexOf( "}}" );
-                    let tag = content.substr(2, end-2);
-                    content = content.substr(end+2);
-                    this.parts.push(new ValueTag(tag));
-                }
-                this.parts.push(new TextTag(content));
+            this.parts = this.contentToParts( content );
+        }
+        /**
+         * @param {String} content
+         * @return {Array.<TextTag|ValueTag>}
+         */
+        contentToParts ( content )
+        {
+            if (!content || typeof content !== "string") {
+                return [];
             }
+            let parts = [];
+            let pos = -1;
+            while ((pos = content.indexOf( "{{" )) > -1) {
+                if (pos > 0) {
+                    parts.push(new TextTag(content.substr(0, pos)));
+                    content = content.substr(pos);
+                }
+                let end = content.indexOf( "}}" );
+                let tag = content.substr(2, end-2);
+                content = content.substr(end+2);
+                parts.push(new ValueTag(tag));
+            }
+            parts.push(new TextTag(content));
+            return parts;
         }
         /**
          * @public

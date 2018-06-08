@@ -79,6 +79,16 @@ for (let version of ["", ".min"]) {
                                                 ]
                                             } ).should.equal ( "<p>A<br/>- &lt;b&gt;&amp;B&#039;s &quot;big&quot;&lt;/b&gt;</p>" );
                                         } );
+                                        it ( "should return expected html(6)", () => {
+                                            let instance = new Template ( "<ul>{%each names.list%}<li>{{_names#list.value}}</li>{%end%}</ul>" );
+                                            instance.render ( {
+                                                names: {
+                                                    list: [
+                                                        "<b>&B's \"big\"</b>"
+                                                    ]
+                                                }
+                                            } ).should.equal ( "<ul><li>&lt;b&gt;&amp;B&#039;s &quot;big&quot;&lt;/b&gt;</li></ul>" );
+                                        } );
                                     } );
                                 } );
                             } );

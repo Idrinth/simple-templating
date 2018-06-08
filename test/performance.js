@@ -1,6 +1,6 @@
 const should = require ( "chai" ).should ();
 const expect = require ( "chai" ).expect;
-const number = 5000;
+const number = 10000 * (process.env.CI ? 0.5 : 1);
 const factor = (() => {
     let start = new Date();
     let num = 0;
