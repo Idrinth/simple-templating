@@ -1,7 +1,7 @@
 const should = require ( "chai" ).should ();
 const expect = require ( "chai" ).expect;
-const number = 5000 * (process.env.CI ? 0.5 : 1);
-const cacheGain = 15 * (process.env.CI ? 0.5 : 1);
+const number = process.env.CI ? 2000 : 5000;
+const cacheGain = process.env.CI ? 5 : 15;
 const factor = (() => {
     let start = new Date();
     let num = 0;
