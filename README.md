@@ -1,6 +1,6 @@
 # Simple Templating
 
-This small library provides minimal templating options for javascrpt in multiple enviroments, have a look at /min to see the options.
+This small library provides minimal templating options for javascript in multiple enviroments, have a look at /min to see the options.
 
 | Type | Status |
 | --- | --- |
@@ -11,7 +11,7 @@ This small library provides minimal templating options for javascrpt in multiple
 
 ## Values
 
-assume the following values: `{key: 'value', keys:{key:2}`
+assume the following values: `{key: 'value', keys: {key : 2}}`
 
 `{{key}}` will be replaced by `value`, `{{keys.key}}` will be replaced by `2`
 
